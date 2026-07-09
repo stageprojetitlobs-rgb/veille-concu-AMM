@@ -201,7 +201,7 @@ def records_filtered(con, concurrent=None, source=None, rtype=None, pays=None, l
         SELECT source, source_uid, record_type, concurrent, produit,
                molecules, pays, url, date_source, date_detection, tags, extra
         FROM records {clause}
-        ORDER BY date_source DESC NULLS LAST
+        ORDER BY COALESCE(date_source, date_detection) DESC
         LIMIT ?
     """, params + [limit])
     return [dict(r) for r in cur.fetchall()]
@@ -225,7 +225,8 @@ def amm_counts_by_pays(con):
 
 def amm_for_pays(con, pays, limit=10000):
     """Toutes les AMM d'un pays donné (registres officiels)."""
-    q = "SELECT concurrent, produit, molecules, source, url, date_source, date_detection FROM records WHERE source IN (%s) AND pays = ? ORDER BY produit LIMIT ?" % (
+    # Tri : AMM la plus récente d'abord (date registre, sinon date de collecte).
+    q = "SELECT concurrent, produit, molecules, source, url, date_source, date_detection FROM records WHERE source IN (%s) AND pays = ? ORDER BY COALESCE(date_source, date_detection) DESC, produit LIMIT ?" % (
         ",".join("?" * len(AMM_SOURCES)))
     cur = con.cursor()
     cur.execute(q, (*AMM_SOURCES, pays, limit))
