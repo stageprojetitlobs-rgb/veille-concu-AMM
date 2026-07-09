@@ -38,7 +38,13 @@ jobs:
       - name: Installer les dépendances
         run: pip install .
 
-      - name: Collecter les données (échec toléré, on publie ce qu'on a)
+      # Collecte fraîche UNIQUEMENT lors du rafraîchissement quotidien programmé.
+      # (Les IP data-center de GitHub sont bloquées par plusieurs registres ;
+      #  la collecte fiable se fait en local et alimente la base versionnée.)
+      # En push/manuel : on publie directement le socle complet versionné (rapide,
+      # déterministe, couverture intégrale).
+      - name: Collecter les données (rafraîchissement quotidien, échec toléré)
+        if: github.event_name == 'schedule'
         run: python -m scripts.run || echo "collecte partielle"
 
       - name: Générer le site statique
