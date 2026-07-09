@@ -1,0 +1,656 @@
+# Configuration centrale de la veille. Aucun secret ici (cf .env).
+
+# Concurrents suivis. Le matching se fait en casefold + sans accents sur le nom
+# du titulaire d'AMM (term-tit côté ANSES) et la raison sociale côté EMA.
+# `aliases` couvre les variantes de raison sociale rencontrées dans les sources.
+concurrents:
+  - nom: Osalia
+    aliases: [osalia]
+    segments: [general]
+  - nom: Axience
+    aliases: [axience]
+    segments: [general]
+  - nom: Laprovet
+    aliases: [laprovet, "la provet"]
+    segments: [volaille, chiens, anti-infectieux, ape, vitamines]
+  - nom: Kepro
+    aliases: [kepro]
+    segments: [general]
+  - nom: Bimeda
+    aliases: [bimeda, bimedavet, "bimeda france"]
+    segments: [general]
+  - nom: Inovet
+    aliases: [inovet]
+    segments: [volaille, chiens, anti-infectieux, ape]
+  # ── Concurrents volaille ──────────────────────────────────────────────────
+  - nom: Ceva
+    aliases: [ceva, "ceva sante animale", "ceva santé animale", "ceva animal health"]
+    segments: [volaille, ruminants, anti-infectieux, reproduction, trypanocides]
+  - nom: Hipra
+    aliases: [hipra, "laboratorios hipra"]
+    segments: [volaille, chiens, ruminants]
+  - nom: Intervet
+    # Intervet = marque vétérinaire de MSD Animal Health.
+    aliases: [intervet, "msd animal health", "msd sante animale", "msd santé animale", "schering-plough animal health"]
+    segments: [volaille, chiens, ruminants]
+  - nom: IZO-Novovet
+    # IZO (ex-Novovet) — vaccins volaille France.
+    aliases: [izo, novovet, "izo novovet", "laboratoires izo"]
+    segments: [volaille]
+  - nom: Boehringer-Ingelheim
+    # BI a racheté Merial (Sanofi) en 2017 → les deux marques encore présentes dans les AMM.
+    aliases: [boehringer, "boehringer ingelheim", "boehringer-ingelheim", merial, "merial sas", "bi animal health"]
+    segments: [volaille, chiens, ruminants]
+  - nom: Dechra
+    aliases: [dechra, "dechra veterinary products", "dechra france"]
+    segments: [volaille, chiens]
+  - nom: Isra
+    # ISRA — présent dans les tableaux concurrents Lobs (vaccins chiens + ruminants).
+    # Aucun site web ni AMM trouvé — matching textuel uniquement.
+    aliases: [isra, "laboratoire isra", "laboratoires isra", "isra lab"]
+    segments: [chiens, ruminants, trypanocides]
+  # ── Concurrents ruminants — instituts publics africains ──────────────────
+  - nom: Labocel
+    # Laboratoire Central de l'Élevage "Garoua" — Niger.
+    aliases: [labocel, "laboratoire central elevage", "labocel niger"]
+    segments: [ruminants]
+  - nom: Lanavet
+    # Laboratoire National Vétérinaire — Cameroun.
+    aliases: [lanavet, "laboratoire national veterinaire", "lanavet cameroun"]
+    segments: [ruminants]
+  - nom: LCV-Mali
+    # Laboratoire Central Vétérinaire du Mali — Bamako.
+    aliases: [lcv, "lcv mali", "laboratoire central veterinaire mali", "laboratoire central veterinaire du mali"]
+    segments: [ruminants]
+  - nom: MCI
+    # MCI Santé Animale — Mohammedia, Maroc. Leader vaccins ruminants Afrique du Nord.
+    aliases: [mci, "mci sante animale", "mci santé animale", "mci pharma"]
+    segments: [ruminants, anti-infectieux, trypanocides, vitamines]
+  - nom: Institut-Pasteur-Dakar
+    # Institut Pasteur de Dakar — Sénégal. Vaccins humains + vétérinaires (fièvre jaune, rage…).
+    aliases: ["institut pasteur dakar", "pasteur dakar", "ipd", "ip dakar"]
+    segments: [ruminants]
+  - nom: KEVEVAPI
+    # Kenya Veterinary Vaccines Production Institute — Nairobi, Kenya.
+    aliases: [kevevapi, "kenya veterinary vaccines", "kenya veterinary vaccines production institute"]
+    segments: [ruminants]
+  - nom: BVI
+    # Botswana Vaccine Institute — Gaborone, Botswana.
+    aliases: [bvi, "botswana vaccine institute", "botswana vaccine"]
+    segments: [ruminants]
+  - nom: PANVAC
+    # Pan African Veterinary Vaccine Centre — Debre Zeit, Éthiopie. Référence UA.
+    aliases: [panvac, "pan african veterinary vaccine", "panvac ethiopia", "panvac ethiopie"]
+    segments: [ruminants]
+  # ── Concurrents anti-infectieux ──────────────────────────────────────────
+  - nom: Kela
+    # Kela Pharma — Belgique. Anti-infectieux vétérinaires.
+    aliases: [kela, "kela pharma", "kela veterinaria"]
+    segments: [anti-infectieux, ape, anti-inflammatoires, chiens, vitamines]
+  - nom: VMD
+    # VMD (Vlaamse Maatschappij voor Diergeneesmiddelen) — Belgique. Maison mère d'Inovet.
+    aliases: [vmd, "vmd inovet", "vlaamse maatschappij voor diergeneesmiddelen"]
+    segments: [anti-infectieux, ape, volaille, chiens]
+  - nom: Alfasan
+    # Alfasan International — Pays-Bas. Anti-infectieux + vitamines vétérinaires export.
+    aliases: [alfasan, "alfasan international", "alfasan woerden"]
+    segments: [anti-infectieux, api, ape, vitamines]
+  - nom: Vetoquinol
+    # Vétoquinol — Lure, France. Grand généraliste vétérinaire français.
+    aliases: [vetoquinol, "vetoquinol sa", "vetoquinol france"]
+    segments: [anti-infectieux, anti-inflammatoires, vitamines, chiens]
+  - nom: Genevet
+    # Genevet — anti-infectieux vétérinaires.
+    aliases: [genevet, "laboratoires genevet", "laboratoire genevet"]
+    segments: [anti-infectieux, ape, anti-inflammatoires, vitamines]
+  - nom: Ashish-Life-Science
+    # Ashish Life Science — Inde. Génériques vétérinaires export (Afrique, Moyen-Orient).
+    # « sciences » au pluriel dans les registres NG/ZW ; « ashish » seul = mot distinctif.
+    aliases: ["ashish life science", "ashish life sciences", "ashish lifescience", "ashish pharma", "ashish"]
+    segments: [anti-infectieux, trypanocides, api]
+  - nom: Dopharma
+    # Dopharma — Pays-Bas. Anti-infectieux + antiparasitaires vétérinaires export.
+    aliases: [dopharma, "dopharma research", "dopharma bv"]
+    segments: [anti-infectieux, api]
+  - nom: Huvepharma
+    # Huvepharma — Bulgarie. Anti-infectieux + coccidiostatiques, fort sur l'export.
+    aliases: [huvepharma, "huve pharma", "huvepharma ad"]
+    segments: [anti-infectieux, api, reproduction]
+  - nom: Interchemie
+    # Interchemie — Pays-Bas. Anti-infectieux génériques vétérinaires.
+    aliases: [interchemie, "interchemie werken"]
+    segments: [anti-infectieux, api, anti-inflammatoires, reproduction]
+  - nom: Agrar-Holland
+    # Agrar Holland — Pays-Bas. Distribution + fabrication anti-infectieux export.
+    aliases: ["agrar holland", "agrar-holland", agrarholland]
+    segments: [anti-infectieux]
+  - nom: Veko-Care
+    # Veko Care — Pays-Bas/Belgique. Anti-infectieux vétérinaires export Afrique.
+    aliases: ["veko care", "veko-care", vekocare]
+    segments: [anti-infectieux, ape]
+  # ── Concurrents trypanocides ─────────────────────────────────────────────
+  - nom: MSD
+    # MSD Animal Health (hors marque Intervet déjà couverte).
+    aliases: [msd, "msd animal health", "merck sharp dohme", "msd sante animale"]
+    segments: [trypanocides, anti-infectieux]
+  - nom: ALM-International
+    # ALM International — trypanocides vétérinaires export Afrique.
+    aliases: ["alm international", "alm", "alm pharma"]
+    segments: [trypanocides]
+  - nom: Vicar
+    # Vicar — trypanocides / anti-infectieux vétérinaires.
+    aliases: [vicar, "vicar pharma", "laboratoire vicar", "laboratoires vicar"]
+    segments: [trypanocides, anti-infectieux]
+  - nom: ACT
+    # ACT — trypanocides vétérinaires (Afrique, Moyen-Orient).
+    aliases: [act, "act pharma", "act veterinaire", "act animal health"]
+    segments: [trypanocides, ape]
+  - nom: Livalth
+    # Live.alth (Livalth) — santé animale export.
+    aliases: ["live.alth", livalth, "liv alth", "livealth"]
+    segments: [trypanocides]
+  # ── Majors mondiaux ──────────────────────────────────────────────────────
+  - nom: Virbac
+    # Virbac — Carros, France. 2ème labo vétérinaire français, très fort Afrique/Maghreb.
+    aliases: [virbac, "virbac sa", "virbac france", "virbac international"]
+    segments: [volaille, chiens, ruminants, anti-infectieux, ape]
+  - nom: Zoetis
+    # Zoetis — N°1 mondial santé animale. Vaccins, anti-infectieux, antiparasitaires.
+    aliases: [zoetis, "zoetis france", "zoetis inc", "pfizer animal health"]
+    segments: [volaille, chiens, ruminants, anti-infectieux]
+  - nom: Elanco
+    # Elanco — N°2 mondial. A racheté Bayer Animal Health en 2020.
+    aliases: [elanco, "elanco animal health", "bayer animal health", "elanco france"]
+    segments: [volaille, chiens, ruminants, anti-infectieux]
+  - nom: Norbrook
+    # Norbrook — Irlande. Spécialiste génériques vétérinaires export Afrique.
+    aliases: [norbrook, "norbrook laboratories", "norbrook pharma"]
+    segments: [anti-infectieux, api]
+  - nom: Calier
+    # Calier — Espagne. Fort sur volaille et ruminants export Afrique/Moyen-Orient.
+    aliases: [calier, "laboratorios calier", "calier sa"]
+    segments: [volaille, ape]
+  - nom: Phibro
+    # Phibro Animal Health — USA. Leader coccidiostatiques volaille + anti-infectieux export.
+    aliases: [phibro, "phibro animal health", "phibro ahc"]
+    segments: [volaille, anti-infectieux]
+  # ── Acteurs zones export (Afrique, Maghreb, Moyen-Orient) ────────────────
+  - nom: Ourofino
+    # Ourofino — Brésil. Montée en puissance en Afrique subsaharienne.
+    aliases: [ourofino, "ourofino agronegocio", "ourofino saude animal"]
+    segments: [ruminants, anti-infectieux]
+  - nom: FATRO
+    # FATRO — Italie. Anti-infectieux + vitamines export Afrique.
+    aliases: [fatro, "fatro spa", "fatro italy"]
+    segments: [anti-infectieux, vitamines]
+  - nom: Chanelle
+    # Chanelle Pharma — Irlande. Génériques vétérinaires export Afrique.
+    aliases: [chanelle, "chanelle pharma", "chanelle veterinary"]
+    segments: [anti-infectieux]
+  - nom: Vetlima
+    # Vetlima — Maroc. Concurrent direct de MCI sur Maghreb + Afrique de l'Ouest.
+    aliases: [vetlima, "vetlima maroc", "laboratoire vetlima"]
+    segments: [ruminants, anti-infectieux]
+
+# Mots-clés stratégiques recherchés dans les RCP / notices (casefold, sans accent).
+# Une occurrence lève un tag sur l'enregistrement (n'affecte pas le diff).
+mots_cles_strategiques:
+  - trypanocide
+  - trypanosomose
+  - trypanosomiase
+  - nagana
+  - surra
+  - isometamidium
+  - diminazene
+  - aceturate
+  - homidium
+  - berenil
+  - trypamidium
+  - samorin
+  - vaccin aviaire
+  - antiparasitaire
+  - coccidiose
+  - aviaire
+  - volaille
+  # Vitamines / Compléments
+  - vitamine
+  - vitamin
+  - multivitamine
+  - vitamine a
+  - vitamine d
+  - vitamine e
+  - vitamine b12
+  - vitamine c
+  - carence vitaminique
+  - complement alimentaire
+  - oligo-element
+  - calcium
+  - phosphore
+  - magnesium
+  - selenium
+  - zinc
+  - fer injectable
+  - acide amine
+  - probiotique
+  - prebiotique
+  # Reproduction
+  - reproduction
+  - hormones reproductrices
+  - insemination artificielle
+  - synchronisation oestrus
+  - gnrh
+  - pgf2
+  - prostaglandine
+  - progesterone
+  - ocytocine
+  - oxytocine
+  - lutalyse
+  - crestar
+  - ovsynch
+  - inducteur parturition
+  - prolificite
+  # Anti-inflammatoires
+  - anti-inflammatoire
+  - ains
+  - nsaid
+  - corticoide
+  - corticosteroide
+  - dexamethasone
+  - flunixine
+  - meloxicam
+  - ketoprofene
+  - phenylbutazone
+  - prednisolone
+  - betamethasone
+  - analgesique
+  - antipyretique
+  # APE — Antiparasitaires Externes
+  - antiparasitaire externe
+  - ectoparasite
+  - tique
+  - puce
+  - mouche
+  - moustique
+  - stomoxe
+  - gale
+  - acaricide
+  - insecticide
+  - pyrethrino
+  - permethrine
+  - cypermethrine
+  - deltamethrine
+  - ivermectine
+  - fipronil
+  - imidaclopride
+  - spot-on
+  - pour-on
+  - bain detiquant
+  - collar antiparasitaire
+  # API — Matières premières actives (Active Pharmaceutical Ingredients)
+  - api
+  - matiere premiere active
+  - active pharmaceutical ingredient
+  - bulk
+  - substance active
+  - synthese chimique
+  - fabrication api
+  # Anti-infectieux
+  - anti-infectieux
+  - antibiotique
+  - antibacterien
+  - antibiotherapie
+  - amoxicilline
+  - oxytétracycline
+  - oxytetracycline
+  - doxycycline
+  - enrofloxacine
+  - tylosine
+  - tiamuline
+  - florfenicol
+  - colistine
+  - sulfamide
+  - trimethoprime
+  - antimicrobien
+  - resistance antimicrobienne
+  # Vaccins ruminants
+  - vaccin ruminant
+  - fievre aphteuse
+  - ppr
+  - peste des petits ruminants
+  - brucellose
+  - charbon
+  - clavelée
+  - fievre de la vallee du rift
+  - rift valley fever
+  - lumpy skin
+  - dermatose nodulaire
+  - theileriose
+  - peripneumonie
+  - pasteurellose
+  - entérotoxémie
+  - ruminant
+  - bovin
+  - ovin
+  - caprin
+  # Vaccins chiens / carnivores
+  - vaccin chien
+  - vaccin canin
+  - rage
+  - parvovirose
+  - leptospirose
+  - maladie de carre
+  - toux du chenil
+  - piroplasmose
+  - leishmaniose
+  - carnivore
+  - canin
+  # Vaccins volaille spécifiques
+  - newcastle
+  - marek
+  - gumboro
+  - bronchite infectieuse
+  - influenza aviaire
+  - metapneumovirus
+  - salmonelle
+  - mycoplasme
+  - coccidiose aviaire
+  - poulet de chair
+  - dinde
+  - reproducteur
+
+# Paramètres par source.
+sources:
+  anses_anmv:
+    enabled: true
+    # URLs officielles data.gouv / pro.anses.fr (cf SOURCES.md, source 1).
+    url_archive: "https://pro.anses.fr/RCP/amm-vet-fr-v2-v.7z"
+    url_reference: "https://pro.anses.fr/RCP/amm-vet-fr-v2-d.xml"
+    # Si false, on ne remonte QUE les produits des concurrents suivis.
+    # Si true, on ingère tout le référentiel (volumineux, ~3000+ AMM).
+    # → true : couverture maximale (détecte aussi les nouveaux entrants non listés).
+    inclure_tous_produits: true
+    # Si false (défaut), source légère : seul le registre (existence/AMM) est suivi.
+    # Si true, on extrait aussi le sous-ensemble business du RCP (posologie, temps
+    # d'attente, indications, composition/dosages, contre-indications) et on suit
+    # ses modifications via un hash RCP distinct. Données issues du même XML V2.
+    inclure_rcp: false
+
+  onssa_maroc:
+    # AMM Maroc — ONSSA « Liste positive des Médicaments Vétérinaires » (PDF officiel
+    # public). Marché export direct pour Lobs. Document destiné à la consultation
+    # publique → conforme. Pensez à mettre à jour url_pdf quand l'ONSSA publie une
+    # nouvelle édition (la liste est datée dans le nom de fichier).
+    enabled: true
+    url_pdf: "https://www.onssa.gov.ma/wp-content/uploads/2023/12/Liste-positive-des-Medicaments-Veterinaires-06-Decembre-2023.pdf"
+    # → true : on garde toutes les AMM marocaines (couverture maximale).
+    inclure_tous_produits: true
+
+  nafdac_nigeria:
+    # AMM Nigeria — NAFDAC « List of Registered Animal Health Products » (PDF officiel
+    # public, tableau réglé). Grand marché export Lobs. Mettre à jour url_pdf quand
+    # NAFDAC publie une édition plus récente.
+    enabled: true
+    url_pdf: "https://www.nafdac.gov.ng/wp-content/uploads/Files/Resources/Directorate_Resources/R_and_R/List-of-Registered-Animal-Health-Products-and-Agrochemicals.pdf"
+    inclure_tous_produits: true
+
+  cdsco_inde:
+    # AMM Inde — CDSCO, autorisations vétérinaires Form-45/46 (PDF officiels publics).
+    # Plusieurs tranches temporelles cumulées (colonnes variables → parsing par en-tête).
+    # NB : la grande « listofveDrugs.pdf » est scannée (image) → non exploitable sans OCR.
+    enabled: true
+    url_pdfs:
+      - "https://cdsco.gov.in/opencms/export/sites/CDSCO_WEB/Pdf-documents/vet-data-2020-to-2022.pdf"
+      - "https://cdsco.gov.in/opencms/export/sites/CDSCO_WEB/Pdf-documents/vddrug1.pdf"
+    inclure_tous_produits: true
+
+  pdf_registry:
+    # Source générique : registres AMM nationaux publiés en PDF tabulaire, mappés
+    # par intitulé de colonne (cf veille/sources/phase1_regulatory/pdf_registry.py).
+    # Ajouter un pays = ajouter une entrée ici, sans toucher au code Python.
+    enabled: true
+    inclure_tous_produits: true
+    registries:
+      - pays: UG
+        label: "NDA Ouganda"
+        url: "https://www.nda.or.ug/nda/files/downloads/NATIONAL%20DRUG%20REGISTER%20OF%20UGANDA%20-%20VETERINARY%20MEDICINES%20-%20AUGUST%202018-1-75.pdf"
+        colonnes:
+          produit: "name of drug"
+          molecules: "generic name"
+          titulaire: "license holder"
+          fabricant: "manufacturer"
+          reg_no: "registrati"
+      - pays: RW
+        label: "Rwanda FDA"
+        url: "https://rwandafda.gov.rw/wp-content/uploads/2024/09/RWANDA%20FDA%20VETERINARY%20MEDICINAL%20PRODUCTS%20REGISTER-SEPTEMBER%202024.pdf"
+        # En-tête éclaté → mappage par indice de colonne des lignes de données.
+        colonnes_idx:
+          reg_no: 1
+          produit: 2
+          molecules: 3
+          fabricant: 9
+          titulaire: 11
+
+  zamra_zambie:
+    # AMM Zambie — API publique du portail ZAMRA (produits enregistrés).
+    # On filtre les classifications vétérinaires côté collecteur.
+    enabled: true
+    api_url: "https://app.zamra.co.zm:42882/portal/publicaccess/onSearchPublicRegisteredproducts"
+    take: 6000
+    verify_ssl: false   # le serveur ZAMRA présente un certificat non standard (port 42882)
+    inclure_tous_produits: true
+
+  mcaz_zimbabwe:
+    # AMM Zimbabwe — registre public en ligne MCAZ, catégorie 2 = vétérinaire.
+    enabled: true
+    api_url: "https://onlineservices.mcaz.co.zw/onlineregister/Medicines/GetMedicinesByCategory?category=2"
+    verify_ssl: false
+    inclure_tous_produits: true
+
+  uemoa_siar:
+    # AMM régionale UEMOA (8 pays Afrique de l'Ouest dont Sénégal, Mali, Côte d'Ivoire)
+    # via le portail SIAR. Le portail métier infoveterinaire.uemoa.int étant down,
+    # on passe par siar.uemoa.int (fiche disponibilité médicaments vétérinaires).
+    enabled: true
+    base_url: "https://siar.uemoa.int/disponibilite-medicament.php"
+    id_fiche: 163
+    max_pages: 40
+    verify_ssl: false
+
+  cucthuy_vietnam:
+    # AMM Vietnam — Cục Thú y, « Danh mục thuốc thú y được phép lưu hành »
+    # (fichier Excel officiel public). Onglets : fabriqués / importés / aquaculture.
+    enabled: true
+    url_xlsx: "https://cucthuy.gov.vn/documents/20125/0/DANH+MUC+THUOC+THU+Y+DUOC+PHEP+LUU+HANH+TAI+VIET+NAM%2C+CAP+NHAT+DEN+31.3.2023+%282%29.xlsx/202097ee-2c27-5070-adf2-558f9f327928?t=1684376440249"
+    sheets:
+      - "PL1A. Thuoc thu y san xuat"
+      - "PL1B. Thuoc thu y nhap khau"
+      - "PL1C. Thuoc thu y thuy san"
+    inclure_tous_produits: true
+
+  bnvf_bangladesh:
+    # AMM Bangladesh — National Veterinary Formulary (DGDA), PDF officiel public.
+    # Extraction des couples marque/fabricant ; on ne garde que les fabricants
+    # récurrents (>= min_occurrences) pour écarter les parenthèses chimiques.
+    enabled: true
+    url_pdf: "https://file-mymensingh.portal.gov.bd/uploads/2696f934-1fec-4d0b-ac6d-772cbe52613a//663/9d2/cc5/6639d2cc5d66c666549883.pdf"
+    min_occurrences: 3
+    inclure_tous_produits: true
+
+  rss:
+    # Collecteur générique de flux officiels de syndication (RSS 2.0 / Atom).
+    # Cas Laprovet : laprovet.fr (catalogue) BLOQUE le scraping → on suit le flux
+    # officiel du site corporate laprovet.com. 100 % conforme (flux destiné à être lu).
+    enabled: true
+    # Si false (défaut), on ne retient que les items rattachés à un concurrent connu.
+    # → true : on garde tous les items des flux (couverture maximale).
+    inclure_tous_items: true
+    feeds:
+      - concurrent: Laprovet
+        url: "https://www.laprovet.com/wp/feed/"
+        pays: FR
+      # ── Concurrents volaille ─────────────────────────────────────────────
+      - concurrent: Ceva
+        url: "https://www.ceva.com/feed/"
+        pays: FR
+      - concurrent: Boehringer-Ingelheim
+        # Flux animal health BI — dernier item vérifié fév. 2025, peut être stale.
+        url: "https://animalhealth.boehringer-ingelheim.com/rss.xml"
+        pays: DE
+      - concurrent: Intervet
+        # MSD Animal Health (marque globale Merck) — flux actif, items en anglais.
+        url: "https://www.merck-animal-health.com/feed/"
+        pays: US
+      # Hipra → pas de flux RSS publié (Drupal sans feed).
+      # Dechra → pas de flux RSS publié (CMS .NET sans feed).
+      # IZO/Novovet → domaines inaccessibles (izovet.com, novovet.fr).
+      - concurrent: Zoetis
+        # Site JS-only (SPA) → flux StockTitan (agrégateur officiel PR Newswire/BW).
+        # Contenu : communiqués de presse Zoetis uniquement.
+        url: "https://www.stocktitan.net/rss/news/ZTS"
+        pays: US
+      - concurrent: Elanco
+        # Site JS-only (SPA) → flux StockTitan (agrégateur officiel PR Newswire/BW).
+        # Contenu : communiqués de presse Elanco uniquement.
+        url: "https://www.stocktitan.net/rss/news/ELAN"
+        pays: US
+
+  space:
+    # SPACE Rennes — Salon des Productions Animales (15-17 sept. 2026, 40ème éd.)
+    # Mode 1 : PDF watcher — surveille les pages presse pour nouveaux documents.
+    # Mode 2 : eventmaker API — activé automatiquement si guestApiToken != "" sur
+    #          la page liste-des-exposants (typiquement 4-8 semaines avant le salon).
+    enabled: true
+    press_pages:
+      - "https://www.space.fr/fr/dossier-de-presse"
+      - "https://www.space.fr/fr/espace-presse"
+    exhibitors_page: "https://www.space.fr/fr/liste-des-exposants"
+
+  kepro:
+    # kepro.nl — pages derrière login (B2B portal WP). Extraction depuis sitemap
+    # public uniquement : nom produit depuis le slug URL. Signal d'existence.
+    enabled: true
+    sitemap_url: "https://www.kepro.nl/products-sitemap.xml"
+    inclure_tous_produits: false  # inutile ici car kepro = concurrent direct
+
+  inovet:
+    # inovet.eu — pages JS-only (SPA). Extraction depuis sitemap fr-fr public :
+    # nom produit + zones/pays de présence. Filtrage sur zones stratégiques Lobs.
+    enabled: true
+    sitemap_url: "https://www.inovet.eu/fr-fr/sitemap_0.xml"
+    # Zones géographiques retenues (cibles Lobs : Afrique, Moyen-Orient, Maghreb).
+    # Mettre [] ou retirer la clé pour tout conserver.
+    zones_cibles: [afrique, moyen-orient, maghreb]
+    # → true : on garde toutes les zones et tous les produits (couverture maximale).
+    inclure_toutes_zones: true
+    inclure_tous_produits: true
+
+  france_travail:
+    # API officielle France Travail (ex-Pôle emploi) — offres d'emploi concurrentes.
+    # Signal : un concurrent qui recrute sur zone export = il prépare une offensive.
+    # Inscription gratuite (partenaire dev) : https://francetravail.io/data/api/offres-emploi
+    # Credentials → .env : FRANCE_TRAVAIL_CLIENT_ID + FRANCE_TRAVAIL_CLIENT_SECRET
+    # Sans credentials la source logge WARNING et renvoie [].
+    enabled: true
+    # Axe 1 : recherche par nom d'entreprise.
+    # ⚠️  DÉSACTIVÉ : l'API France Travail fait un matching flou sur le champ entreprise
+    # → remonte des homonymes sans rapport (maisons de retraite "Osalia", BTP "Kepro"…).
+    # Couverture assurée par l'axe 2 (mots-clés sectoriels).
+    recherche_par_entreprise: false
+    # Axe 2 : recherche par mots-clés métier vétérinaire (filtrée sur concurrents connus).
+    # Les termes garantissent le secteur → pas de faux positifs intersectoriels.
+    recherche_par_mots_cles: true
+    # Nombre max de résultats par requête (API plafonne à 150).
+    nb_resultats: 50
+    # Filtre départements INSEE (vide = toute la France).
+    # Les postes export sont souvent basés à Paris (75), Lyon (69), Toulouse (31).
+    departements: []
+
+  news_pages:
+    # Pages actualités / press-release HTML pour les concurrents sans flux RSS.
+    # robots.txt vérifié à chaque run. Rate-limiting : download_delay_s entre hôtes.
+    # IZO/Novovet : domaines suspendus (OVHcloud) → à remettre si le site revient.
+    enabled: true
+    pages:
+      - concurrent: Hipra
+        url: "https://www.hipra.com/en/press/press-releases"
+        pays: ES
+      - concurrent: Hipra
+        url: "https://www.hipra.com/en/news"
+        pays: ES
+      - concurrent: Dechra
+        url: "https://www.dechra.com/news"
+        pays: GB
+      - concurrent: Virbac
+        url: "https://corporate.virbac.com/home/news-media/financial-public-releases.html"
+        pays: FR
+      - concurrent: Virbac
+        url: "https://corporate.virbac.com/home/news-media/news.html"
+        pays: FR
+      - concurrent: FATRO
+        url: "https://www.fatro.it/blog/news/"
+        pays: IT
+      - concurrent: Calier
+        url: "https://calier.com/es/media/"
+        pays: ES
+      # Chine — annonces officielles d'AMM vétérinaires (农业农村部公告 via IVDC).
+      # Canal conforme : la base de données nationale est protégée anti-bot, on
+      # surveille donc les publications d'approbations (新兽药/批准兽药产品).
+      - concurrent: ""
+        url: "http://www.ivdc.org.cn/xxgk/zcfg/nyncbgg/"
+        pays: CN
+
+  careers:
+    # Pages carrières des concurrents — crawl direct (robots.txt vérifié à chaque run).
+    # Complète France Travail : les concurrents publient parfois leurs offres en interne
+    # avant (ou sans) passer par un jobboard.
+    # robots.txt respecté : si un site interdit le crawl, la page est sautée (log INFO).
+    #
+    # Vérification faite le 2026-06-12 :
+    #   Axience  → pas de page carrières propre sur axience.fr → couvert par France Travail
+    #   Laprovet → pas de page recrutement propre → couvert par France Travail
+    #   Kepro    → pas de page vacatures accessible → couvert par France Travail
+    #   Bimeda   → bimedacareers.com (robots.txt bloque) → saut auto, couvert par France Travail
+    #   Osalia   → osalia.vet/rejoindre-osalia ✅ (page présente, formulaire candidature spontanée)
+    #   Inovet   → page 200 mais aucune offre listée → gardé pour détecter une future publication
+    enabled: true
+    pages:
+      - concurrent: Osalia
+        url: "https://www.osalia.vet/rejoindre-osalia"
+        pays: FR
+      - concurrent: Bimeda
+        # robots.txt bloque le crawl → saut automatique, log INFO
+        url: "https://www.bimedacareers.com"
+        pays: IE
+      - concurrent: Inovet
+        url: "https://www.inovet.eu/fr-fr/recrutement/"
+        pays: FR
+    # Pour Axience, Laprovet, Kepro : aucune page propre trouvée — couverture assurée
+    # par France Travail (source france_travail ci-dessus). Mettre à jour ici dès qu'une
+    # page carrières est publiée sur leur site officiel.
+    # LinkedIn/Indeed hors scope scraping → alertes natives si besoin.
+
+  ema_upd:
+    # Désactivée tant que l'accès OAuth2 MAH n'est pas accordé (cf docs/ema_upd_cadrage.md).
+    enabled: false
+    # mode: fixtures (données d'exemple, hors-ligne) | live (API réelle).
+    mode: fixtures
+    # URL de base de l'API — à renseigner depuis le Chapitre 5 du Vet EU IG.
+    api_base: ""
+    inclure_tous_produits: false
+    # Paramètres de recherche passés à l'API en mode live (filtres, pagination…).
+    query: {}
+
+# Réglages réseau communs (transparence + pas de surcharge serveur).
+http:
+  timeout_s: 60
+  # Délai mini entre deux requêtes vers un même hôte (côté sources non-Scrapy).
+  download_delay_s: 1.0
+
+# Stockage : sqlite pour démarrer, abstraction prête pour airtable (cf storage/).
+storage:
+  backend: sqlite
+  sqlite_path: "data/db/veille.db"
+
+# Notifier actif : slack | console. `console` n'envoie rien (utile en local).
+notifier:
+  backend: slack

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.boehringer-ingelheim.com)",
+      "WebFetch(domain:www.hipra.com)",
+      "WebFetch(domain:hipra.com)",
+      "WebFetch(domain:www.dechra.com)",
+      "WebFetch(domain:www.vetinnov.com)",
+      "WebFetch(domain:www.ceva.com)"
+    ]
+  }
+}

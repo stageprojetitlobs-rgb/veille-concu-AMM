@@ -1,0 +1,27 @@
+# Secrets & config locale
+.env
+config.local.yaml
+
+# Données générées (DB, PDFs téléchargés, exports, caches téléchargés)
+data/db/*.db
+data/db/*.sqlite
+data/pdfs/
+data/cache/
+_inspect/
+
+# Logs
+logs/*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+
+# OS
+.DS_Store

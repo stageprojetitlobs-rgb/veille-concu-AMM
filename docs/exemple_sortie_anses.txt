@@ -1,0 +1,49 @@
+$ python -m scripts.run --source anses_anmv --dry-run
+
+09:30:58 INFO    veille.orchestrator | → Collecte source anses_anmv
+09:30:59 INFO    veille.sources.phase1_regulatory.anses_anmv | Téléchargement https://pro.anses.fr/RCP/amm-vet-fr-v2-d.xml
+09:31:00 INFO    veille.sources.phase1_regulatory.anses_anmv | Référentiel chargé : 14 tables
+09:31:00 INFO    veille.sources.phase1_regulatory.anses_anmv | Téléchargement https://pro.anses.fr/RCP/amm-vet-fr-v2-v.7z
+09:31:02 INFO    veille.orchestrator | anses_anmv : 57 collecté(s), 57 changement(s) à notifier
+
+[NOTIF] 🆕 NOUVEAU · Bimeda · MECTAJECT 10 MG/ML SOLUTION INJECTABLE POUR BOVINS ET OVINS (nouvelle_amm, 2005-06-30)
+   molécules: Ivermectine  [tags: antiparasitaire]
+   http://www.ircp.anmv.anses.fr/rcp.aspx?NomMedicament=MECTAJECT+10+MG%2fML+SOLUTION+INJECTABLE+POUR+BOVINS+ET+OVINS
+
+[NOTIF] 🆕 NOUVEAU · Bimeda · BIMACOX 2,5 MG/ML SUSPENSION BUVABLE POUR AGNEAUX ET VEAUX (nouvelle_amm, 2024-07-04)
+   molécules: Diclazuril  [tags: coccidiose]
+   http://www.ircp.anmv.anses.fr/rcp.aspx?NomMedicament=BIMACOX+2%2c5+MG%2fML+SUSPENSION+BUVABLE+POUR+AGNEAUX+ET+VEAUX
+
+[NOTIF] 🆕 NOUVEAU · Axience · EMEPAX 160 MG COMPRIMES A CROQUER POUR CHIENS (nouvelle_amm, 2026-03-26)
+   molécules: Citrate de maropitant monohydraté
+
+[NOTIF] 🆕 NOUVEAU · Kepro · GLUCADEX 2 MG/ML SOLUTION INJECTABLE POUR CHEVAUX BOVINS CAPRINS PORCINS CHIENS ET CHATS (nouvelle_amm, 2019-12-11)
+   molécules: Phosphate sodique de dexaméthasone
+   http://www.ircp.anmv.anses.fr/rcp.aspx?NomMedicament=GLUCADEX+2+MG%2fML+SOLUTION+INJECTABLE+POUR+CHEVAUX+BOVINS+CAPRINS+PORCINS+CHIENS+ET+CHATS
+
+[NOTIF] 🆕 NOUVEAU · Laprovet · OXYTETRACYCLINE 20 % INOUKO (nouvelle_amm, 1998-12-04)
+   molécules: Oxytétracycline
+   http://www.ircp.anmv.anses.fr/rcp.aspx?NomMedicament=OXYTETRACYCLINE+20+%25+INOUKO
+
+  (… 52 autres signaux …)
+
+============================================================
+Bilan [DRY-RUN (aucun envoi)] : 57 changement(s) sur 1 source(s)
+  - anses_anmv: 57 collecté(s), 57 changement(s)
+
+
+--- Champ `extra` d'un enregistrement (exemple, tronqué) ---
+{
+  "num_amm_fr": "1234567",
+  "num_amm_eu": null,
+  "perm_id": "300000123456",
+  "prod_id_upd": "a1b2c3d4-....-............",   # clé de jointure avec l'API EMA (Phase 2)
+  "titulaire": "BIMEDA FRANCE",
+  "atcvet": ["QP54AA01"],
+  "temps_attente": [
+    {"espece": "Bovins", "denree": "Viande et abats", "valeur": "21", "unite": "jour(s)"},
+    {"espece": "Bovins", "denree": "Lait", "valeur": "0", "unite": "heure(s)"}
+  ]
+}
+
+NB : au 2e passage sans changement → "0 changement(s)" (déduplication par hash).

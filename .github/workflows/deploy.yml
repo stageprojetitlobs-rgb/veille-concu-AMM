@@ -1,0 +1,54 @@
+name: Veille — collecte + publication
+
+# Publie le dashboard statique sur GitHub Pages.
+# - tous les jours à 6h UTC (collecte fraîche puis mise en ligne)
+# - à chaque push sur main
+# - manuellement (bouton "Run workflow")
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Droits nécessaires au déploiement Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Une seule publication à la fois.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install .
+
+      - name: Collecter les données (échec toléré, on publie ce qu'on a)
+        run: python -m scripts.run || echo "collecte partielle"
+
+      - name: Générer le site statique
+        run: python -m scripts.export_static --out site
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

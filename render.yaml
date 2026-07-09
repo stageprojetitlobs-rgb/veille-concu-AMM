@@ -1,0 +1,28 @@
+# Blueprint Render — déploiement en un clic depuis le repo GitHub.
+# Sur render.com : New > Blueprint > choisir ce repo. Render lit ce fichier.
+services:
+  - type: web
+    name: veille-lobs
+    runtime: docker
+    plan: starter          # ~7 $/mois, toujours actif. Mettre "free" pour tester (s'endort).
+    healthCheckPath: /healthz
+    autoDeploy: true       # redeploie à chaque push GitHub
+    disk:
+      name: veille-data
+      mountPath: /data     # base SQLite persistante (survit aux redéploiements)
+      sizeGB: 1
+    envVars:
+      - key: VEILLE_DB_PATH
+        value: /data/veille.db
+      - key: SCRAPE_EVERY_HOURS
+        value: "24"          # rafraîchissement des données : 1 fois par jour
+      - key: DASH_USER
+        value: lobs
+      - key: DASH_PASSWORD
+        sync: false        # à saisir dans l'interface Render (jamais dans le code)
+      - key: SLACK_WEBHOOK_URL
+        sync: false        # optionnel — notifications Slack
+      - key: FRANCE_TRAVAIL_CLIENT_ID
+        sync: false        # optionnel
+      - key: FRANCE_TRAVAIL_CLIENT_SECRET
+        sync: false        # optionnel

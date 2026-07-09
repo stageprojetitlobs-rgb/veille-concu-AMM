@@ -1,0 +1,31 @@
+{
+  "_comment": "Fixture d'exemple imitant une réponse de l'API EMA UPD (Chapitre 5 Vet EU IG). Structure HYPOTHÉTIQUE à réaligner sur le schéma réel dès réception des specs. Sert uniquement à faire tourner le stub hors-ligne.",
+  "products": [
+    {
+      "productIdentifier": "a1b2c3d4-0000-4000-8000-000000000001",
+      "permanentIdentifier": "300000999001",
+      "name": "EXAMPLEXINE 100 MG/ML SOLUTION FOR INJECTION FOR CATTLE",
+      "marketingAuthorisationHolder": {"name": "Axience SAS"},
+      "activeSubstances": ["Exampline hydrochloride"],
+      "targetSpecies": ["Cattle"],
+      "atcVetCodes": ["QJ01AA99"],
+      "authorisationCountry": "EU",
+      "authorisationStatus": "Authorised",
+      "authorisationDate": "2025-11-20",
+      "productUrl": "https://medicines.health.europa.eu/veterinary/en/600000000001"
+    },
+    {
+      "productIdentifier": "a1b2c3d4-0000-4000-8000-000000000002",
+      "permanentIdentifier": "300000999002",
+      "name": "BIMEXAMPLE 50 MG/G PREMIX FOR POULTRY",
+      "marketingAuthorisationHolder": {"name": "Bimeda Animal Health Limited"},
+      "activeSubstances": ["Examplicin"],
+      "targetSpecies": ["Chickens"],
+      "atcVetCodes": ["QP51AA99"],
+      "authorisationCountry": "EU",
+      "authorisationStatus": "Authorised",
+      "authorisationDate": "2026-02-10",
+      "productUrl": "https://medicines.health.europa.eu/veterinary/en/600000000002"
+    }
+  ]
+}

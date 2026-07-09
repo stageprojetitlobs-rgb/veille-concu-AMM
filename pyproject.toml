@@ -1,0 +1,41 @@
+[project]
+name = "veille-concu-lobs"
+version = "0.1.0"
+description = "Veille concurrentielle automatisée pour Lobs (laboratoire vétérinaire)"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",          # appels API ponctuels (EMA, data.gouv)
+    "lxml>=5.2",            # parsing XML ANSES en streaming (iterparse)
+    "py7zr>=0.21",          # décompression de l'archive .7z ANSES
+    "pyyaml>=6.0",          # config.yaml
+    "python-dotenv>=1.0",   # chargement .env (secrets hors code)
+    "pdfplumber>=0.11",     # registres AMM en PDF (Maroc, Nigeria, Inde, Ouganda, Rwanda)
+    "openpyxl>=3.1",        # registre AMM Vietnam (Excel Cục Thú y)
+]
+
+[project.optional-dependencies]
+# Installé seulement quand on attaque les phases de scraping (2/3)
+scraping = [
+    "scrapy>=2.11",
+    "pdfplumber>=0.11",     # extraction texte des notices PDF
+    "pandas>=2.2",          # pd.read_html (salons), consolidation
+    "openpyxl>=3.1",        # lecture .xlsx le cas échéant
+]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+veille = "scripts.run:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["veille", "scripts"]
