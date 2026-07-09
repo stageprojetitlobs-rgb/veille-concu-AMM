@@ -12,6 +12,7 @@ from veille.sources.phase1_regulatory.anses_anmv import AnsesAnmvSource
 from veille.sources.phase1_regulatory.ema_upd import EmaUpdSource
 from veille.sources.phase1_regulatory.onssa_maroc import OnssaMarocSource
 from veille.sources.phase1_regulatory.nafdac_nigeria import NafdacNigeriaSource
+from veille.sources.phase1_regulatory.nafdac_greenbook import NafdacGreenbookSource
 from veille.sources.phase1_regulatory.cdsco_inde import CdscoIndeSource
 from veille.sources.phase1_regulatory.pdf_registry import PdfRegistrySource
 from veille.sources.phase1_regulatory.zamra_zambie import ZamraZambieSource
@@ -30,7 +31,8 @@ _SOURCES: dict[str, type[Source]] = {
     AnsesAnmvSource.name: AnsesAnmvSource,
     EmaUpdSource.name: EmaUpdSource,       # désactivée tant que l'accès OAuth2 n'est pas accordé
     OnssaMarocSource.name: OnssaMarocSource,  # AMM Maroc — PDF officiel ONSSA (liste positive)
-    NafdacNigeriaSource.name: NafdacNigeriaSource,  # AMM Nigeria — PDF officiel NAFDAC
+    NafdacNigeriaSource.name: NafdacNigeriaSource,  # AMM Nigeria — PDF officiel NAFDAC (historique, 2016-2018)
+    NafdacGreenbookSource.name: NafdacGreenbookSource,  # AMM Nigeria — Greenbook, API publique (2020-2024, plus frais)
     CdscoIndeSource.name: CdscoIndeSource,  # AMM Inde — PDF officiels CDSCO (Form-45/46)
     PdfRegistrySource.name: PdfRegistrySource,  # registres AMM nationaux en PDF (générique, multi-pays)
     ZamraZambieSource.name: ZamraZambieSource,  # AMM Zambie — API publique ZAMRA (JSON)

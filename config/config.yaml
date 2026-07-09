@@ -393,6 +393,15 @@ sources:
     url_pdf: "https://www.nafdac.gov.ng/wp-content/uploads/Files/Resources/Directorate_Resources/R_and_R/List-of-Registered-Animal-Health-Products-and-Agrochemicals.pdf"
     inclure_tous_produits: true
 
+  nafdac_greenbook:
+    # AMM Nigeria — NAFDAC Greenbook (greenbook.nafdac.gov.ng), base officielle en
+    # ligne activement maintenue. API JSON publique (celle que le site utilise pour
+    # son propre tableau de recherche), robots.txt entièrement ouvert. Complète le
+    # PDF historique (nafdac_nigeria, 2016-2018) avec des AMM plus récentes (jusqu'à
+    # fin 2024 constaté). Filtre catégorie "Veterinary" (product_category_id=6).
+    enabled: true
+    inclure_tous_produits: true
+
   cdsco_inde:
     # AMM Inde — CDSCO, autorisations vétérinaires Form-45/46 (PDF officiels publics).
     # Plusieurs tranches temporelles cumulées (colonnes variables → parsing par en-tête).
