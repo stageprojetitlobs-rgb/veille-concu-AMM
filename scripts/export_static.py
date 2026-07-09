@@ -93,9 +93,14 @@ def build(out_dir: str = "site") -> int:
         _write(out, "asie.html", d.render_asie_mo(con))
         _write(out, "aide.html", d.render_aide(con))
         _write(out, "amm.html", d.render_amm(con, ""))
-        # 2000 signaux (au lieu de 200) : les filtres tournent en JS côté
-        # navigateur, il leur faut de la matière.
-        recs = d.records_filtered(con, None, None, None, None, limit=2000)
+        # Signaux équilibrés PAR SOURCE (150 plus récents chacune) : un « top 2000
+        # global » serait écrasé par les grosses sources (Vietnam ~4700) et
+        # UEMOA/Maroc/Nigeria n'apparaîtraient jamais. Les filtres tournent en JS.
+        recs = []
+        for s in d.all_sources(con):
+            recs.extend(d.records_filtered(con, None, s, None, None, limit=150))
+        recs.sort(key=lambda r: (r.get("date_source") or r.get("date_detection") or ""),
+                  reverse=True)
         html_sig = d.render_signaux(
             recs, d.all_concurrents(con), d.all_sources(con), "", "", "", "", "")
         html_sig = html_sig.replace(" · max 200", " · filtres instantanés")
