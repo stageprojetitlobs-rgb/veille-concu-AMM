@@ -35,6 +35,14 @@ _STOP = ("penicillin", "acid", "sodium", "see", "section", "vet)", "oral", "i.v"
          "i.m", "gi ", "sulph", "chloride", "vaccine", "injection", "tablet",
          "powder", "bolus", "solution", "suspension")
 
+# Fragments de marque trop génériques/courts pour être un vrai nom de produit
+# (ex. « ...for Vet (Newtec), » capture « Vet » comme marque à tort — c'est un
+# mot de la prose, pas un nom commercial). Comparaison en minuscules exactes.
+_BRAND_STOP = {
+    "vet", "inj", "tab", "cap", "oral", "powder", "drug", "la", "wsp",
+    "sol", "susp", "syp", "gm", "kg", "mg", "ml", "for", "and", "the",
+}
+
 
 def _txt(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
@@ -92,6 +100,8 @@ class BnvfBangladeshSource(Source):
         seen: set[str] = set()
         for brand, maker in pairs:
             if maker_counts[maker] < min_occ:
+                continue
+            if brand.strip().lower() in _BRAND_STOP or len(brand.strip()) < 4:
                 continue
             uid = f"BD|{maker}|{brand}".lower()
             if uid in seen:

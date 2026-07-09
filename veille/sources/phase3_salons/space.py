@@ -224,9 +224,10 @@ class SpaceSource(Source):
         norm_text = normalize_text(text)
         tags_global = self.settings.keywords_in(norm_text)
 
-        # Cherche chaque concurrent dans le texte
+        # Cherche chaque concurrent dans le texte (matching par mot entier —
+        # cf Concurrent.matches, évite les faux positifs type "ACT" dans un mot).
         for concurrent_obj in self.settings.concurrents:
-            if any(normalize_text(a) in norm_text for a in (concurrent_obj.nom, *concurrent_obj.aliases)):
+            if concurrent_obj.matches(norm_text):
                 uid = f"pdf:{_pdf_uid(pdf_url)}:{normalize_text(concurrent_obj.nom)}"
                 rec = Record(
                     source=self.name,
