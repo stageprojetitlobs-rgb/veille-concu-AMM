@@ -381,7 +381,7 @@ sources:
     # publique → conforme. Pensez à mettre à jour url_pdf quand l'ONSSA publie une
     # nouvelle édition (la liste est datée dans le nom de fichier).
     enabled: true
-    url_pdf: "https://www.onssa.gov.ma/wp-content/uploads/2023/12/Liste-positive-des-Medicaments-Veterinaires-06-Decembre-2023.pdf"
+    url_pdf: "https://www.onssa.gov.ma/wp-content/uploads/2025/05/LISTE-POSITIVE-DES-MEDICAMENTS-VETERINAIRES-06-MAI-2025.pdf"
     # → true : on garde toutes les AMM marocaines (couverture maximale).
     inclure_tous_produits: true
 
