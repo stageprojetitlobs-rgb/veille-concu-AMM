@@ -21,6 +21,39 @@ from pathlib import Path
 from scripts import dashboard as d
 
 
+# Filtres de la page Signaux : côté serveur en local, côté navigateur en statique.
+# Les lignes .sig-row portent déjà data-conc / data-src / data-type → on filtre en JS.
+_SIGNAUX_FILTER_JS = """<script>
+(function(){
+  const form = document.querySelector('form[action="signaux.html"]');
+  if (!form) return;
+  const rows = Array.from(document.querySelectorAll('.sig-row'));
+  const selC = form.querySelector('select[name="concurrent"]');
+  const selS = form.querySelector('select[name="source"]');
+  const selT = form.querySelector('select[name="rtype"]');
+  const cnt = Array.from(document.querySelectorAll('div'))
+    .find(d => d.children.length === 0 && d.textContent.includes('résultat(s) affiché(s)'));
+  function apply(e){
+    if (e) e.preventDefault();
+    const c = selC.value;
+    const s = selS.value ? selS.options[selS.selectedIndex].text : '';
+    const t = selT.value ? selT.options[selT.selectedIndex].text : '';
+    let n = 0;
+    for (const r of rows){
+      const ok = (!c || r.dataset.conc === c)
+              && (!s || r.dataset.src === s)
+              && (!t || r.dataset.type === t);
+      r.style.display = ok ? '' : 'none';
+      if (ok) n++;
+    }
+    if (cnt) cnt.textContent = n + ' résultat(s) affiché(s)';
+  }
+  form.addEventListener('submit', apply);
+  [selC, selS, selT].forEach(sel => sel.addEventListener('change', () => apply()));
+})();
+</script>"""
+
+
 def _rewrite_links(html: str) -> str:
     """Réécrit les liens absolus du serveur en chemins de fichiers statiques."""
     # AMM par pays : /amm?pays=XX → amm-XX.html
@@ -60,9 +93,14 @@ def build(out_dir: str = "site") -> int:
         _write(out, "asie.html", d.render_asie_mo(con))
         _write(out, "aide.html", d.render_aide(con))
         _write(out, "amm.html", d.render_amm(con, ""))
-        recs = d.records_filtered(con, None, None, None, None)
-        _write(out, "signaux.html", d.render_signaux(
-            recs, d.all_concurrents(con), d.all_sources(con), "", "", "", "", ""))
+        # 2000 signaux (au lieu de 200) : les filtres tournent en JS côté
+        # navigateur, il leur faut de la matière.
+        recs = d.records_filtered(con, None, None, None, None, limit=2000)
+        html_sig = d.render_signaux(
+            recs, d.all_concurrents(con), d.all_sources(con), "", "", "", "", "")
+        html_sig = html_sig.replace(" · max 200", " · filtres instantanés")
+        html_sig = html_sig.replace("</body>", _SIGNAUX_FILTER_JS + "</body>")
+        _write(out, "signaux.html", html_sig)
         n += 7
 
         # Une page par pays ayant des AMM (grille cliquable → amm-XX.html).
