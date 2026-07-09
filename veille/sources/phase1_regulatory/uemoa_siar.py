@@ -42,7 +42,9 @@ _PAYS_ISO = {
 }
 
 _AMM_RE = re.compile(r"UEMOA/V", re.I)
-_YEAR_RE = re.compile(r"\b(19|20)\d{2}\b")
+# La date d'octroi est encodée DANS le numéro d'AMM lui-même
+# (ex. "UEMOA/V/00001/2016/07/25/R1" → 2016-07-25) : c'est la seule date fiable.
+_AMM_DATE_RE = re.compile(r"/((?:19|20)\d{2})/(\d{2})/(\d{2})(?!\d)")
 _TAG_RE = re.compile(r"<[^>]+>")
 
 
@@ -143,8 +145,13 @@ class UemoaSiarSource(Source):
                     idx = c.index(next(x for x in c if _AMM_RE.search(x)))
                     classe = c[idx + 1] if idx + 1 < len(c) else ""
                     forme = c[idx + 2] if idx + 2 < len(c) else ""
-                    ym = _YEAR_RE.search(" ".join(c))
-                    d = date(int(ym.group(0)), 1, 1) if ym else None
+                    dm = _AMM_DATE_RE.search(amm)
+                    d = None
+                    if dm:
+                        try:
+                            d = date(int(dm.group(1)), int(dm.group(2)), int(dm.group(3)))
+                        except ValueError:
+                            d = None
 
                     libelle = " · ".join(p for p in (classe, forme) if p) or amm
                     rec = Record(
