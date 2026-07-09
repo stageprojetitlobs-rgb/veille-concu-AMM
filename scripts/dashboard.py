@@ -88,7 +88,8 @@ RECORD_TYPE_LABELS = {
 SOURCE_LABELS = {
     "anses_anmv": "ANSES/ANMV (FR)",
     "onssa_maroc": "ONSSA (MA)",
-    "nafdac_nigeria": "NAFDAC (NG)",
+    "nafdac_nigeria": "NAFDAC (NG, historique)",
+    "nafdac_greenbook": "NAFDAC Greenbook (NG)",
     "cdsco_inde": "CDSCO (IN)",
     "cucthuy_vietnam": "Cục Thú y (VN)",
     "bnvf_bangladesh": "BNVF (BD)",
@@ -209,8 +210,9 @@ def records_filtered(con, concurrent=None, source=None, rtype=None, pays=None, l
 
 # Sources qui sont de vrais registres d'AMM (pas de la présence/actu).
 AMM_SOURCES = (
-    "anses_anmv", "onssa_maroc", "nafdac_nigeria", "cdsco_inde", "pdf_registry",
-    "zamra_zambie", "mcaz_zimbabwe", "uemoa_siar", "cucthuy_vietnam", "bnvf_bangladesh",
+    "anses_anmv", "onssa_maroc", "nafdac_nigeria", "nafdac_greenbook", "cdsco_inde",
+    "pdf_registry", "zamra_zambie", "mcaz_zimbabwe", "uemoa_siar", "cucthuy_vietnam",
+    "bnvf_bangladesh",
 )
 
 
@@ -953,7 +955,8 @@ GLOSSAIRE = [
 SOURCE_INFO = [
     ("anses_anmv", "🇫🇷", "ANSES / ANMV", "Open data (XML)", "Toutes les AMM vétérinaires françaises."),
     ("onssa_maroc", "🇲🇦", "ONSSA", "PDF officiel", "Liste positive des médicaments vétérinaires du Maroc."),
-    ("nafdac_nigeria", "🇳🇬", "NAFDAC", "PDF officiel", "Produits de santé animale enregistrés au Nigeria."),
+    ("nafdac_nigeria", "🇳🇬", "NAFDAC", "PDF officiel (historique)", "Produits de santé animale enregistrés au Nigeria — liste 2016-2018."),
+    ("nafdac_greenbook", "🇳🇬", "NAFDAC Greenbook", "API publique officielle", "Base en ligne activement maintenue de NAFDAC — AMM plus récentes (jusqu'à fin 2024)."),
     ("cdsco_inde", "🇮🇳", "CDSCO", "PDF officiels", "Autorisations vétérinaires (Form-45/46) en Inde."),
     ("cucthuy_vietnam", "🇻🇳", "Cục Thú y", "Excel officiel", "Médicaments vét autorisés au Vietnam (fabriqués / importés / aquaculture)."),
     ("bnvf_bangladesh", "🇧🇩", "DGDA", "PDF (formulaire national)", "Produits vét enregistrés au Bangladesh (extraits du formulaire)."),
