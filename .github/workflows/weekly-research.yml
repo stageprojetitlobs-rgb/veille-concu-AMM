@@ -1,14 +1,18 @@
 name: Recherche hebdomadaire de sources plus fraîches
 
-# Tourne indépendamment de Claude Code / du Mac : job cloud GitHub, planifié.
-# Chaque semaine, un agent Claude (avec recherche web) vérifie si les autorités
-# (ONSSA, NAFDAC, CDSCO...) ont publié une édition plus récente ou une base en
-# ligne plus à jour que celle configurée. Les changements sûrs (même parseur,
-# juste une URL plus récente) sont proposés en Pull Request — jamais fusionnés
+# Job cloud GitHub qui, chaque semaine, vérifie si les autorités (ONSSA,
+# NAFDAC, CDSCO...) ont publié une édition plus récente ou une base en ligne
+# plus à jour que celle configurée. Les changements sûrs (même parseur, juste
+# une URL plus récente) sont proposés en Pull Request — jamais fusionnés
 # automatiquement. Voir scripts/research_sources.py pour le détail.
+#
+# DÉCLENCHEMENT AUTOMATIQUE DÉSACTIVÉ (2026-07-09) : nécessite des crédits
+# payants sur l'API Claude (facturés séparément d'un abonnement Claude.ai),
+# non disponibles pour l'instant. Reste utilisable manuellement
+# (workflow_dispatch, bouton "Run workflow" sur GitHub) une fois des crédits
+# ajoutés sur platform.claude.com. En attendant, l'équivalent gratuit tourne
+# via une tâche planifiée Claude Code (app ouverte) — cf mémoire du projet.
 on:
-  schedule:
-    - cron: "0 7 * * 1"  # lundi 7h UTC
   workflow_dispatch:
 
 permissions:
