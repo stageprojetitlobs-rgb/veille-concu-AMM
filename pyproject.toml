@@ -25,6 +25,9 @@ dev = [
     "pytest>=8.0",
     "ruff>=0.5",
 ]
+research = [
+    "anthropic>=0.40",       # agent hebdomadaire de recherche de sources plus fraîches
+]
 
 [project.scripts]
 veille = "scripts.run:main"

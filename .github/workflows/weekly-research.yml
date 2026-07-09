@@ -1,0 +1,41 @@
+name: Recherche hebdomadaire de sources plus fraîches
+
+# Tourne indépendamment de Claude Code / du Mac : job cloud GitHub, planifié.
+# Chaque semaine, un agent Claude (avec recherche web) vérifie si les autorités
+# (ONSSA, NAFDAC, CDSCO...) ont publié une édition plus récente ou une base en
+# ligne plus à jour que celle configurée. Les changements sûrs (même parseur,
+# juste une URL plus récente) sont proposés en Pull Request — jamais fusionnés
+# automatiquement. Voir scripts/research_sources.py pour le détail.
+on:
+  schedule:
+    - cron: "0 7 * * 1"  # lundi 7h UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install . anthropic
+
+      - name: Configurer git et gh
+        run: |
+          git config user.name "veille-lobs-bot"
+          git config user.email "actions@github.com"
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Lancer l'agent de recherche
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m scripts.research_sources
