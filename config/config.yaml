@@ -421,7 +421,7 @@ sources:
     registries:
       - pays: UG
         label: "NDA Ouganda"
-        url: "https://www.nda.or.ug/nda/files/downloads/NATIONAL%20DRUG%20REGISTER%20OF%20UGANDA%20-%20VETERINARY%20MEDICINES%20-%20AUGUST%202018-1-75.pdf"
+        url: "https://www.nda.or.ug/wp-content/uploads/2024/07/NATIONAL-DRUG-REGISTER-OF-UGANDA-VETERINARY-MEDICINES-JULY-2024.pdf"
         colonnes:
           produit: "name of drug"
           molecules: "generic name"
