@@ -482,6 +482,13 @@ sources:
     # récurrents (>= min_occurrences) pour écarter les parenthèses chimiques.
     enabled: true
     url_pdf: "https://file-mymensingh.portal.gov.bd/uploads/2696f934-1fec-4d0b-ac6d-772cbe52613a//663/9d2/cc5/6639d2cc5d66c666549883.pdf"
+
+  vmd_kenya:
+    # AMM Kenya — Veterinary Medicines Directorate (vmd.go.ke), registre HTML
+    # public en 3 catégories (pharmaceuticals/biologicals/feed-additives).
+    # Nouveau marché est-africain, non couvert jusqu'ici.
+    enabled: true
+    inclure_tous_produits: true
     min_occurrences: 3
     inclure_tous_produits: true
 
