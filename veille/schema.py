@@ -83,7 +83,12 @@ class Record:
     # date_detection (volatile) et tags (dérivés).
     _REGISTRE_FIELDS = ("produit", "molecules", "pays", "date_source")
     # Clés de `extra` qui font partie de l'identité registre.
-    _REGISTRE_EXTRA = ("num_amm_fr", "num_amm_eu", "titulaire", "atcvet")
+    _REGISTRE_EXTRA = (
+        "num_amm_fr", "num_amm_eu", "titulaire", "atcvet",
+        # Numéro d'AMM / d'enregistrement — clé de vérification sur le site
+        # officiel. Les sources utilisent des noms différents selon le pays.
+        "numero_amm", "reg_no",
+    )
 
     def _registre_payload(self) -> dict:
         payload: dict = {}

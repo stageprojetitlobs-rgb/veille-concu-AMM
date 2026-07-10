@@ -37,7 +37,9 @@ log = logging.getLogger(__name__)
 _DATE_RE = re.compile(r"^\d{2}/\d{2}/\d{4}$")
 
 # Bornes de colonnes (position x0 du mot), calées sur la mise en page du PDF ONSSA.
-# Validité / présentation / n° AMM (x0 ≥ 506) sont ignorés : hors identité registre.
+# Validité / présentation (506 ≤ x0 < 700) sont ignorés : hors identité registre.
+# N° AMM (x0 ≥ 700, dernière colonne, ex. "AMM N° 1706.4/19/V2") EST capté :
+# c'est la clé de vérification sur le site officiel, indispensable.
 def _col_of(x0: float) -> str | None:
     if x0 < 110:
         return "societe"
@@ -49,6 +51,8 @@ def _col_of(x0: float) -> str | None:
         return "principe"
     if 415 <= x0 < 506:
         return "especes"
+    if x0 >= 700:
+        return "reg_no"
     return None
 
 
@@ -156,6 +160,7 @@ class OnssaMarocSource(Source):
                     "titulaire": societe,
                     "principe_actif": p["principe"],
                     "especes_cibles": especes,
+                    "numero_amm": p.get("reg_no", ""),
                 },
             )
             rec.compute_hashes()
@@ -194,6 +199,7 @@ class OnssaMarocSource(Source):
         words = [w for w in page.extract_words() if 125 < w["top"] < 538]
         cells: dict[str, list] = {
             "societe": [], "produit": [], "date": [], "principe": [], "especes": [],
+            "reg_no": [],
         }
         for w in words:
             c = _col_of(w["x0"])
@@ -219,11 +225,20 @@ class OnssaMarocSource(Source):
                     soc_here = txt
             current_societe = soc_here
 
+            # Une même ligne « produit » peut porter plusieurs numéros d'AMM
+            # (une par présentation/dosage) : "AMM N° X AMM N° Y ...". On les
+            # sépare proprement plutôt que de garder un seul bloc concaténé.
+            reg_no_raw = _join_band(cells, "reg_no", lo, hi)
+            # Un vrai numéro contient au moins un chiffre et un "/" (ex. "1706.4/19/V2") ;
+            # écarte les fragments parasites (mots de la colonne voisine mal bornés).
+            reg_nos = [n.strip() for n in re.split(r"AMM\s*N°\s*", reg_no_raw)
+                       if re.search(r"\d", n) and "/" in n]
             rows.append({
                 "societe": soc_here,
                 "produit": _join_band(cells, "produit", lo, hi),
                 "date": d,
                 "principe": _join_band(cells, "principe", lo, hi),
                 "especes": _join_band(cells, "especes", lo, hi),
+                "reg_no": "; ".join(reg_nos),
             })
         return rows, current_societe

@@ -229,7 +229,7 @@ def amm_counts_by_pays(con):
 def amm_for_pays(con, pays, limit=10000):
     """Toutes les AMM d'un pays donné (registres officiels)."""
     # Tri : AMM la plus récente d'abord (date registre, sinon date de collecte).
-    q = "SELECT concurrent, produit, molecules, source, url, date_source, date_detection FROM records WHERE source IN (%s) AND pays = ? ORDER BY COALESCE(date_source, date_detection) DESC, produit LIMIT ?" % (
+    q = "SELECT concurrent, produit, molecules, source, url, date_source, date_detection, extra FROM records WHERE source IN (%s) AND pays = ? ORDER BY COALESCE(date_source, date_detection) DESC, produit LIMIT ?" % (
         ",".join("?" * len(AMM_SOURCES)))
     cur = con.cursor()
     cur.execute(q, (*AMM_SOURCES, pays, limit))
@@ -822,10 +822,16 @@ def render_amm(con, pays: str = "") -> str:
         date = date_affichee(r)
         src = SOURCE_LABELS.get(r["source"], r["source"])
         url = r["url"] or ""
+        try:
+            extra = json.loads(r["extra"] or "{}")
+        except (ValueError, TypeError):
+            extra = {}
+        numero_amm = extra.get("numero_amm") or extra.get("reg_no") or ""
         # Données portées par la ligne → la fiche détail s'ouvre SANS quitter la page.
         attrs = (f'data-produit="{_html.escape(produit, quote=True)}" '
                  f'data-mols="{_html.escape(mols, quote=True)}" '
                  f'data-conc="{_html.escape(conc, quote=True)}" '
+                 f'data-numamm="{_html.escape(numero_amm, quote=True)}" '
                  f'data-date="{date or "—"}" data-src="{_html.escape(src, quote=True)}" '
                  f'data-url="{_html.escape(url, quote=True)}"')
         trs += f"""<tr class="amm-row border-b hover:bg-indigo-50 cursor-pointer" {attrs}>
@@ -875,7 +881,11 @@ def render_amm(con, pays: str = "") -> str:
     <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 relative">
       <button id="amm-close" class="absolute top-3 right-4 text-gray-400 hover:text-gray-700 text-xl">×</button>
       <p class="text-xs text-gray-400 mb-1">AMM · {_flag(pays)} {nom}</p>
-      <h2 id="m-produit" class="text-xl font-bold text-gray-900 mb-4"></h2>
+      <h2 id="m-produit" class="text-xl font-bold text-gray-900 mb-1"></h2>
+      <p id="m-numamm-wrap" class="mb-4">
+        <span class="text-xs text-gray-400">N° AMM (vérifiable sur le registre officiel) </span>
+        <code id="m-numamm" class="text-xs bg-gray-100 rounded px-1.5 py-0.5 font-mono text-gray-700"></code>
+      </p>
       <dl class="space-y-2 text-sm">
         <div class="flex"><dt class="w-32 text-gray-400">Molécules</dt><dd id="m-mols" class="flex-1 text-gray-800"></dd></div>
         <div class="flex"><dt class="w-32 text-gray-400">Titulaire</dt><dd id="m-conc" class="flex-1 font-semibold"></dd></div>
@@ -913,6 +923,9 @@ def render_amm(con, pays: str = "") -> str:
     show('conc').textContent = r.dataset.conc;
     show('date').textContent = r.dataset.date;
     show('src').textContent = r.dataset.src;
+    const numamm = document.getElementById('m-numamm-wrap');
+    if (r.dataset.numamm){ show('numamm').textContent = r.dataset.numamm; numamm.style.display=''; }
+    else { numamm.style.display='none'; }
     const u = document.getElementById('m-url');
     if (r.dataset.url){ u.href = r.dataset.url; u.style.display=''; } else { u.style.display='none'; }
     modal.classList.remove('hidden'); modal.classList.add('flex');
@@ -1058,6 +1071,7 @@ def render_signaux(records, concurrents, sources,
             extra = {}
         titulaire = extra.get("titulaire") or ""
         registre = extra.get("registre") or ""
+        numero_amm = extra.get("numero_amm") or extra.get("reg_no") or ""
         # La fiche détail s'ouvre au clic (SANS quitter la page) : les registres
         # n'ont pas d'URL par produit, donc « voir » = fiche + lien registre clair.
         attrs = (f'data-produit="{_html.escape(produit, quote=True)}" '
@@ -1068,6 +1082,7 @@ def render_signaux(records, concurrents, sources,
                  f'data-pays="{_html.escape(pays, quote=True)}" '
                  f'data-date="{date}" data-tit="{_html.escape(titulaire, quote=True)}" '
                  f'data-reg="{_html.escape(registre, quote=True)}" '
+                 f'data-numamm="{_html.escape(numero_amm, quote=True)}" '
                  f'data-url="{_html.escape(url, quote=True)}"')
         rows_html += f"""
         <tr class="sig-row border-b hover:bg-indigo-50 cursor-pointer" {attrs}>
@@ -1163,6 +1178,7 @@ def render_signaux(records, concurrents, sources,
       <p class="text-xs text-gray-400 mb-1"><span id="s-type"></span> · <span id="s-pays"></span></p>
       <h2 id="s-produit" class="text-xl font-bold text-gray-900 mb-4"></h2>
       <dl class="space-y-2 text-sm">
+        <div class="flex"><dt class="w-32 text-gray-400">N° AMM</dt><dd id="s-numamm" class="flex-1 text-gray-800 font-mono text-xs"></dd></div>
         <div class="flex"><dt class="w-32 text-gray-400">Concurrent</dt><dd id="s-conc" class="flex-1 font-semibold"></dd></div>
         <div class="flex"><dt class="w-32 text-gray-400">Molécules</dt><dd id="s-mols" class="flex-1 text-gray-800"></dd></div>
         <div class="flex"><dt class="w-32 text-gray-400">Titulaire</dt><dd id="s-tit" class="flex-1 text-gray-800"></dd></div>
@@ -1194,12 +1210,14 @@ def render_signaux(records, concurrents, sources,
     set('date', r.dataset.date);
     set('src', r.dataset.src);
     set('reg', r.dataset.reg);
+    set('numamm', r.dataset.numamm);
     const u = document.getElementById('s-url');
     const hint = document.getElementById('s-hint');
     if (r.dataset.url){
       u.href = r.dataset.url; u.style.display='';
       if (hint) hint.style.display='';
-      u.dataset.produit = r.dataset.produit || '';
+      // Copie le N° AMM si on l'a (clé de recherche précise), sinon le nom du produit.
+      u.dataset.produit = r.dataset.numamm || r.dataset.produit || '';
     } else {
       u.style.display='none';
       if (hint) hint.style.display='none';
