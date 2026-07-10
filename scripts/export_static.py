@@ -99,8 +99,10 @@ def build(out_dir: str = "site") -> int:
         recs = []
         for s in d.all_sources(con):
             recs.extend(d.records_filtered(con, None, s, None, None, limit=150))
-        recs.sort(key=lambda r: (r.get("date_source") or r.get("date_detection") or ""),
-                  reverse=True)
+        # Vraie date si connue, sinon estimation statistique par source (jamais
+        # la date de collecte : ferait remonter les dates inconnues en tête).
+        estimates = d.date_estimates_by_source(con)
+        recs.sort(key=lambda r: d._sort_key(r, estimates), reverse=True)
         html_sig = d.render_signaux(
             recs, d.all_concurrents(con), d.all_sources(con), "", "", "", "", "")
         html_sig = html_sig.replace(" · max 200", " · filtres instantanés")

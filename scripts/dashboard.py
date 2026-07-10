@@ -203,10 +203,13 @@ def records_filtered(con, concurrent=None, source=None, rtype=None, pays=None, l
         SELECT source, source_uid, record_type, concurrent, produit,
                molecules, pays, url, date_source, date_detection, tags, extra
         FROM records {clause}
-        ORDER BY COALESCE(date_source, date_detection) DESC
-        LIMIT ?
-    """, params + [limit])
-    return [dict(r) for r in cur.fetchall()]
+    """, params)
+    rows = [dict(r) for r in cur.fetchall()]
+    # Tri par vraie date (sinon estimation statistique, jamais affichée comme
+    # une vraie date) AVANT de limiter, pour garder les bons enregistrements.
+    estimates = date_estimates_by_source(con)
+    rows.sort(key=lambda r: _sort_key(r, estimates), reverse=True)
+    return rows[:limit]
 
 
 # Sources qui sont de vrais registres d'AMM (pas de la présence/actu).
@@ -228,21 +231,54 @@ def amm_counts_by_pays(con):
 
 def amm_for_pays(con, pays, limit=10000):
     """Toutes les AMM d'un pays donné (registres officiels)."""
-    # Tri : AMM la plus récente d'abord (date registre, sinon date de collecte).
-    q = "SELECT concurrent, produit, molecules, source, url, date_source, date_detection, extra FROM records WHERE source IN (%s) AND pays = ? ORDER BY COALESCE(date_source, date_detection) DESC, produit LIMIT ?" % (
+    q = "SELECT concurrent, produit, molecules, source, url, date_source, date_detection, extra FROM records WHERE source IN (%s) AND pays = ? LIMIT ?" % (
         ",".join("?" * len(AMM_SOURCES)))
     cur = con.cursor()
     cur.execute(q, (*AMM_SOURCES, pays, limit))
-    return [dict(r) for r in cur.fetchall()]
+    rows = [dict(r) for r in cur.fetchall()]
+    # Tri : AMM la plus récente d'abord (vraie date si connue, sinon placement
+    # par estimation statistique — jamais affiché comme une vraie date),
+    # produit en tri secondaire croissant (tri stable : produit d'abord).
+    estimates = date_estimates_by_source(con)
+    rows.sort(key=lambda r: r.get("produit") or "")
+    rows.sort(key=lambda r: _sort_key(r, estimates), reverse=True)
+    return rows
 
 
 def date_affichee(r) -> str:
-    """Date du registre si connue, sinon date de 1ʳᵉ collecte préfixée « ≈ »
-    (beaucoup de registres PDF ne datent pas leurs lignes)."""
+    """Date du registre si connue, sinon « Inconnu » explicite — on n'affiche
+    jamais une date approximative qui pourrait passer pour une vraie date."""
     if r.get("date_source"):
         return r["date_source"][:10]
-    det = (r.get("date_detection") or "")[:10]
-    return f"≈ {det}" if det else "—"
+    return "Inconnu"
+
+
+def date_estimates_by_source(con) -> dict:
+    """Date médiane connue par source (+ médiane globale en repli pour les
+    sources qui n'ont AUCUNE date connue, ex. Vietnam). Sert UNIQUEMENT à
+    placer les enregistrements sans date à un endroit plausible dans les
+    listes triées par date — jamais affichée comme si c'était une vraie date."""
+    cur = con.cursor()
+    by_source: dict[str, list[str]] = {}
+    all_dates: list[str] = []
+    for source, d in cur.execute("SELECT source, date_source FROM records WHERE date_source IS NOT NULL"):
+        by_source.setdefault(source, []).append(d)
+        all_dates.append(d)
+
+    def median(dates: list[str]) -> str:
+        s = sorted(dates)
+        return s[len(s) // 2]
+
+    global_median = median(all_dates) if all_dates else "2000-01-01"
+    return {source: median(dates) for source, dates in by_source.items()} | {"__global__": global_median}
+
+
+def _sort_key(r, estimates: dict) -> str:
+    """Clé de tri : vraie date si connue, sinon estimation statistique
+    (médiane de la source, jamais affichée à l'utilisateur)."""
+    if r.get("date_source"):
+        return r["date_source"]
+    return estimates.get(r.get("source"), estimates.get("__global__", "2000-01-01"))
 
 
 def official_urls_by_pays(con):
@@ -946,9 +982,12 @@ GLOSSAIRE = [
     ("AMM", "Autorisation de Mise sur le Marché : l'agrément officiel d'un pays "
             "qui permet de vendre un médicament vétérinaire sur son territoire. "
             "C'est le cœur de la veille : qui a le droit de vendre quoi, et où."),
-    ("Date « ≈ »", "Quand un registre n'indique pas la date d'octroi de l'AMM "
-                   "(fréquent dans les PDF officiels), on affiche la date de première "
-                   "collecte par la veille, précédée du signe ≈."),
+    ("Date « Inconnu »", "Quand un registre officiel n'indique pas la date d'octroi de "
+                         "l'AMM (fréquent dans certains PDF), on affiche explicitement "
+                         "« Inconnu » plutôt qu'une fausse date — jamais de date approximative "
+                         "présentée comme réelle. Ces produits sont classés dans les listes en "
+                         "fonction d'une estimation statistique interne (jamais affichée), "
+                         "juste pour un tri plausible."),
     ("Titulaire", "L'entreprise qui détient l'AMM (le laboratoire qui commercialise "
                   "le produit). C'est sur ce nom qu'on reconnaît un concurrent."),
     ("Molécule / substance active", "Le principe actif du médicament (ex. ivermectine, "
