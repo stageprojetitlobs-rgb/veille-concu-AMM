@@ -428,6 +428,7 @@ sources:
           titulaire: "license holder"
           fabricant: "manufacturer"
           reg_no: "registrati"
+          date: "registration date"
       - pays: RW
         label: "Rwanda FDA"
         url: "https://rwandafda.gov.rw/wp-content/uploads/2024/09/RWANDA%20FDA%20VETERINARY%20MEDICINAL%20PRODUCTS%20REGISTER-SEPTEMBER%202024.pdf"
@@ -438,6 +439,7 @@ sources:
           molecules: 3
           fabricant: 9
           titulaire: 11
+          date: 13
 
   zamra_zambie:
     # AMM Zambie — API publique du portail ZAMRA (produits enregistrés).

@@ -67,10 +67,12 @@ def _build_colmap(header_row: list[str]) -> dict[str, int]:
         for needle, field in _HEADER_MAP:
             if needle in low and field not in colmap:
                 colmap[field] = idx
-    # « date » seule (édition sans « permission date ») en repli.
+    # Repli « date » : le même document réutilise des libellés différents
+    # d'une page à l'autre pour la même colonne (ex. « Date » p.1, « Date of
+    # Approval » p.9) — on capte tout en-tête qui commence par « date ».
     if "date" not in colmap:
         for idx, cell in enumerate(header_row):
-            if _clean(cell).lower() == "date":
+            if _clean(cell).lower().startswith("date"):
                 colmap["date"] = idx
                 break
     return colmap

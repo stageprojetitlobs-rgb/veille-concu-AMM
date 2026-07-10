@@ -36,6 +36,7 @@ from __future__ import annotations
 import logging
 import re
 import tempfile
+from datetime import date, datetime
 
 import httpx
 import pdfplumber
@@ -45,8 +46,24 @@ from veille.sources.base import Source
 
 log = logging.getLogger(__name__)
 
-# Champs logiques reconnus. `produit` est obligatoire.
-_FIELDS = ("produit", "molecules", "titulaire", "fabricant", "especes", "reg_no", "reference")
+# Champs logiques reconnus. `produit` est obligatoire. `date` = date réelle
+# d'enregistrement/AMM (PAS la date de collecte) — mappée quand le registre a
+# une colonne dédiée (ex. Ouganda : "REGISTRATION DATE").
+_FIELDS = ("produit", "molecules", "titulaire", "fabricant", "especes", "reg_no", "reference", "date")
+
+_DATE_FORMATS = ("%d/%m/%Y", "%d-%m-%Y", "%Y-%m-%d", "%d %B %Y")
+# "12TH MAY 2023" -> "12 MAY 2023" (suffixe ordinal anglais retiré avant parsing).
+_ORDINAL_RE = re.compile(r"(\d{1,2})(ST|ND|RD|TH)\b", re.I)
+
+
+def _parse_date(raw: str) -> date | None:
+    raw = _ORDINAL_RE.sub(r"\1", (raw or "").strip())
+    for fmt in _DATE_FORMATS:
+        try:
+            return datetime.strptime(raw, fmt).date()
+        except ValueError:
+            continue
+    return None
 
 
 def _clean(cell: str | None) -> str:
@@ -117,7 +134,7 @@ class PdfRegistrySource(Source):
                     molecules=molecules,
                     pays=pays,
                     url=url,
-                    date_source=None,
+                    date_source=_parse_date(r.get("date", "")),
                     tags=tags,
                     extra={
                         "titulaire": titulaire,
