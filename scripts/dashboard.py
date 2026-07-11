@@ -94,6 +94,7 @@ SOURCE_LABELS = {
     "cucthuy_vietnam": "Cục Thú y (VN)",
     "bnvf_bangladesh": "BNVF (BD)",
     "vmd_kenya": "VMD (KE)",
+    "minepia_cameroun": "MINEPIA (CM)",
     "pdf_registry": "Registre national",
     "zamra_zambie": "ZAMRA (ZM)",
     "mcaz_zimbabwe": "MCAZ (ZW)",
@@ -216,7 +217,7 @@ def records_filtered(con, concurrent=None, source=None, rtype=None, pays=None, l
 AMM_SOURCES = (
     "anses_anmv", "onssa_maroc", "nafdac_nigeria", "nafdac_greenbook", "cdsco_inde",
     "pdf_registry", "zamra_zambie", "mcaz_zimbabwe", "uemoa_siar", "cucthuy_vietnam",
-    "bnvf_bangladesh", "vmd_kenya",
+    "bnvf_bangladesh", "vmd_kenya", "minepia_cameroun",
 )
 
 
@@ -1014,6 +1015,7 @@ SOURCE_INFO = [
     ("cucthuy_vietnam", "🇻🇳", "Cục Thú y", "Excel officiel", "Médicaments vét autorisés au Vietnam (fabriqués / importés / aquaculture)."),
     ("bnvf_bangladesh", "🇧🇩", "DGDA", "PDF (formulaire national)", "Produits vét enregistrés au Bangladesh (extraits du formulaire)."),
     ("vmd_kenya", "🇰🇪", "Veterinary Medicines Directorate", "Registre HTML public", "Produits vét enregistrés au Kenya (pharmaceutiques, biologiques, additifs alimentaires)."),
+    ("minepia_cameroun", "🇨🇲", "MINEPIA", "PDF officiel", "Liste des AMM vétérinaires du Cameroun, groupée par laboratoire titulaire."),
     ("zamra_zambie", "🇿🇲", "ZAMRA", "API publique", "Registre des médicaments vétérinaires de Zambie."),
     ("mcaz_zimbabwe", "🇿🇼", "MCAZ", "Registre en ligne", "Médicaments vétérinaires approuvés au Zimbabwe."),
     ("uemoa_siar", "🌍", "UEMOA / CRMV", "Portail régional", "AMM régionales valables dans 8 pays d'Afrique de l'Ouest."),

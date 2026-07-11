@@ -21,6 +21,7 @@ from veille.sources.phase1_regulatory.uemoa_siar import UemoaSiarSource
 from veille.sources.phase1_regulatory.cucthuy_vietnam import CucthuyVietnamSource
 from veille.sources.phase1_regulatory.bnvf_bangladesh import BnvfBangladeshSource
 from veille.sources.phase1_regulatory.vmd_kenya import VmdKenyaSource
+from veille.sources.phase1_regulatory.minepia_cameroun import MinepiaCamerounSource
 from veille.sources.phase2_catalogs.kepro import KeprosSource
 from veille.sources.phase2_catalogs.inovet import InovetSource
 from veille.sources.phase3_salons.space import SpaceSource
@@ -42,6 +43,7 @@ _SOURCES: dict[str, type[Source]] = {
     CucthuyVietnamSource.name: CucthuyVietnamSource,  # AMM Vietnam — Excel officiel Cục Thú y
     BnvfBangladeshSource.name: BnvfBangladeshSource,  # AMM Bangladesh — National Veterinary Formulary (PDF)
     VmdKenyaSource.name: VmdKenyaSource,  # AMM Kenya — VMD, registre HTML public (pharma/bio/feed)
+    MinepiaCamerounSource.name: MinepiaCamerounSource,  # AMM Cameroun — MINEPIA, PDF officiel
     RssSource.name: RssSource,             # flux officiels de syndication (ex. Laprovet)
     NewsPagesSource.name: NewsPagesSource, # pages actualités HTML sans RSS (Hipra, Dechra)
     KeprosSource.name: KeprosSource,       # kepro.nl — sitemap (pages derrière login)

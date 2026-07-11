@@ -494,6 +494,13 @@ sources:
     min_occurrences: 3
     inclure_tous_produits: true
 
+  minepia_cameroun:
+    # AMM Cameroun — MINEPIA, liste PDF officielle groupée par laboratoire.
+    # robots.txt absent (404) sur minepia.cm → aucune restriction.
+    enabled: true
+    url_pdf: "https://minepia.cm/site/wp-content/uploads/2024/11/Liste-2024-AMM-finalisee-1.pdf"
+    inclure_tous_produits: true
+
   rss:
     # Collecteur générique de flux officiels de syndication (RSS 2.0 / Atom).
     # Cas Laprovet : laprovet.fr (catalogue) BLOQUE le scraping → on suit le flux
