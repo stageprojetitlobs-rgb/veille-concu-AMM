@@ -1,0 +1,42 @@
+{
+  "https://www.onssa.gov.ma/wp-content/uploads/2025/05/LISTE-POSITIVE-DES-MEDICAMENTS-VETERINAIRES-06-MAI-2025.pdf": {
+    "etag": "\"33e46a-6347759b3f976\"",
+    "last_modified": "Tue, 06 May 2025 13:11:10 GMT",
+    "content_length": "3400810"
+  },
+  "https://www.nafdac.gov.ng/wp-content/uploads/Files/Resources/Directorate_Resources/R_and_R/List-of-Registered-Animal-Health-Products-and-Agrochemicals.pdf": {
+    "etag": "",
+    "last_modified": "Mon, 17 Jun 2019 10:01:12 GMT",
+    "content_length": "405903"
+  },
+  "https://cdsco.gov.in/opencms/export/sites/CDSCO_WEB/Pdf-documents/vet-data-2020-to-2022.pdf": {
+    "etag": "W/\"811627-1720680900340\"",
+    "last_modified": "Thu, 11 Jul 2024 06:55:00 GMT",
+    "content_length": "811627"
+  },
+  "https://cdsco.gov.in/opencms/export/sites/CDSCO_WEB/Pdf-documents/vddrug1.pdf": {
+    "etag": "W/\"25349-1744180726623\"",
+    "last_modified": "Wed, 09 Apr 2025 06:38:46 GMT",
+    "content_length": "25349"
+  },
+  "https://minepia.cm/site/wp-content/uploads/2024/11/Liste-2024-AMM-finalisee-1.pdf": {
+    "etag": "\"dfbad-626defddd5500-gzip\"",
+    "last_modified": "Thu, 14 Nov 2024 12:57:24 GMT",
+    "content_length": ""
+  },
+  "https://cucthuy.gov.vn/documents/20125/0/DANH+MUC+THUOC+THU+Y+DUOC+PHEP+LUU+HANH+TAI+VIET+NAM%2C+CAP+NHAT+DEN+31.3.2023+%282%29.xlsx/202097ee-2c27-5070-adf2-558f9f327928?t=1684376440249": {
+    "etag": "",
+    "last_modified": "Thu, 18 May 2023 02:20:40 GMT",
+    "content_length": "12047005"
+  },
+  "https://www.nda.or.ug/wp-content/uploads/2024/07/NATIONAL-DRUG-REGISTER-OF-UGANDA-VETERINARY-MEDICINES-JULY-2024.pdf": {
+    "etag": "",
+    "last_modified": "Mon, 08 Jul 2024 05:44:09 GMT",
+    "content_length": ""
+  },
+  "https://rwandafda.gov.rw/wp-content/uploads/2024/09/RWANDA%20FDA%20VETERINARY%20MEDICINAL%20PRODUCTS%20REGISTER-SEPTEMBER%202024.pdf": {
+    "etag": "",
+    "last_modified": "Mon, 23 Sep 2024 08:12:12 GMT",
+    "content_length": "5385347"
+  }
+}

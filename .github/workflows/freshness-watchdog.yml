@@ -1,0 +1,67 @@
+name: Veille — watchdog de fraîcheur
+
+# Surveille, gratuitement et sans IA, si une source PDF/Excel déjà configurée
+# a changé de contenu à la même URL (l'autorité a remplacé le fichier en place).
+# Ne détecte PAS une nouvelle édition publiée à une URL différente : ce cas-là
+# reste une recherche ponctuelle (manuelle ou tâche Claude Code).
+on:
+  schedule:
+    - cron: "0 7 * * 1"   # lundi 7h UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: freshness-watchdog
+  cancel-in-progress: true
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install .
+
+      - name: Vérifier la fraîcheur des sources
+        id: watchdog
+        run: |
+          python -m scripts.freshness_watchdog | tee /tmp/watchdog_output.txt
+          if grep -q "^- \*\*" /tmp/watchdog_output.txt; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Committer l'état mis à jour
+        run: |
+          git config user.name "veille-lobs-bot"
+          git config user.email "actions@github.com"
+          git add data/freshness_state.json
+          git diff --cached --quiet || git commit -m "chore: état watchdog de fraîcheur"
+          git push
+
+      - name: Ouvrir/mettre à jour une issue si changement détecté
+        if: steps.watchdog.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BODY="Le watchdog de fraîcheur a détecté qu'une ou plusieurs sources déjà configurées ont changé de contenu à leur URL actuelle (l'autorité a probablement republié une édition plus récente au même endroit) :
+
+          $(cat /tmp/watchdog_output.txt)
+
+          À vérifier manuellement : retélécharger, confirmer que le format de tableau/colonnes n'a pas changé, relancer la source concernée (\`python -m scripts.run --source <nom>\`), avec le notifier basculé sur \`console\` pour le premier passage."
+
+          EXISTING=$(gh issue list --search 'in:title "Watchdog fraîcheur"' --state open --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "🔔 Watchdog fraîcheur — sources à revérifier" --body "$BODY"
+          fi
