@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import shutil
 from pathlib import Path
 
 from scripts import dashboard as d
@@ -116,6 +117,11 @@ def build(out_dir: str = "site") -> int:
                 continue  # on ne génère que les codes ISO propres
             _write(out, f"amm-{pays}.html", d.render_amm(con, pays))
             n += 1
+
+        # Assets statiques (logo...) — copiés tels quels.
+        assets_src = Path("assets")
+        if assets_src.is_dir():
+            shutil.copytree(assets_src, out / "assets", dirs_exist_ok=True)
 
         # Empêche GitHub Pages de passer le site dans Jekyll (inutile ici).
         (out / ".nojekyll").write_text("", encoding="utf-8")

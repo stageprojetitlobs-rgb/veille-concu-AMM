@@ -21,6 +21,7 @@ import hashlib
 import hmac
 import html as _html
 import json
+import mimetypes
 import os
 import sqlite3
 import webbrowser
@@ -346,7 +347,7 @@ def layout(active: str, title: str, body: str, extra_head: str = "",
 <header class="bg-white border-b shadow-sm sticky top-0 z-10">
   <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">L</div>
+      <img src="assets/logo-lobs.png" alt="Lobs" class="w-10 h-10 rounded-xl object-contain bg-white" />
       <div>
         <p class="font-bold text-gray-900 leading-tight text-base">Veille Concurrentielle Lobs</p>
         <p class="text-xs text-gray-400 leading-tight">Surveillance du marché vétérinaire</p>
@@ -1323,6 +1324,20 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(encoded)
 
+    def _send_asset(self, filename: str):
+        path = Path(__file__).resolve().parent.parent / "assets" / filename
+        if not path.is_file():
+            self._send("<h1>404 — introuvable</h1>", 404)
+            return
+        content_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        data = path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "public, max-age=86400")
+        self.end_headers()
+        self.wfile.write(data)
+
     def do_GET(self):
         parsed = urlparse(self.path)
         qs = parse_qs(parsed.query)
@@ -1335,6 +1350,11 @@ class Handler(BaseHTTPRequestHandler):
 
         if not self._authorized():
             self._require_auth()
+            return
+
+        # Fichiers statiques (logo...) — chemin restreint à assets/, pas de traversée.
+        if path.startswith("/assets/") and "/" not in path[len("/assets/"):] and ".." not in path:
+            self._send_asset(path[len("/assets/"):])
             return
 
         # Redirections de compatibilité (anciennes URL)
